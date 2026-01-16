@@ -1,20 +1,32 @@
 <script lang="ts">
     import type IUsuario from "../interfaces/IUsuario";
+    import { buscarRepositórios, buscarUsuario } from "../requesicoes";
     export let usuario: IUsuario | null = null;
 
-    let value: String = "";
+    let value: string = "";
+    let statusErro: number | null = null;
 
     async function aoSubmeter() {
-        const resposta = await fetch(`https://api.github.com/users/${value}`);
-        const dados = await resposta.json();
-        usuario = {
-            avatar_url: dados.avatar_url,
-            login: dados.login,
-            nome: dados.name,
-            perfil_url: dados.html_url,
-            repositorios_publicos: dados.public_repos,
-            seguidores: dados.followers,
-        };
+        const respostaUsuario = await buscarUsuario(value); // Aqui pega o buscarUsuário do arquivo requisições.ts onde foi feito a requisição para a API do GitHub
+        const respostaRepositorios = await buscarRepositórios(value);
+
+        if (respostaUsuario.ok && respostaRepositorios.ok) {
+            const dados = await respostaUsuario.json();
+            const dadosRepositorios = await respostaRepositorios.json(); 
+            // console.log(dadosRepositorios);
+            usuario = {
+                avatar_url: dados.avatar_url,
+                login: dados.login,
+                nome: dados.name,
+                perfil_url: dados.html_url,
+                repositorios_publicos: dados.public_repos,
+                seguidores: dados.followers,
+            };
+            statusErro = null;
+        } else {
+            statusErro = respostaUsuario.status;
+            usuario = null;
+        }
     }
 </script>
 
@@ -23,9 +35,15 @@
     <input
         type="text"
         class="input"
+        class:erro-input={statusErro === 404 || statusErro === 403}
         bind:value
         placeholder="Pesquise um usuário."
     />
+    {#if statusErro === 404}
+    <span class="erro">Usuário não encontrado! Verifique o nome.</span>
+    {:else if statusErro === 403}
+    <span class="erro">Limite de requisições atingido. Tente novamente mais tarde.</span>
+    {/if}
     <div class="botao-container">
         <button type="submit" class="botao">Buscar</button>
     </div>
@@ -81,5 +99,21 @@
 
     .botao:hover {
         background: #4590ff;
+    }
+
+    .erro {
+        position: absolute;
+        bottom: -25px;
+        left: 0;
+        font-style: italic;
+        font-weight: normal;
+        font-size: 16px;
+        line-height: 19px;
+        z-index: -1;
+        color: #ff003e;
+    }
+
+    .erro-input {
+        border: 1px solid #ff003e;
     }
 </style>
