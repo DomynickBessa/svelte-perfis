@@ -18,11 +18,24 @@
     header {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
+        gap: 3rem;
     }
 
     .busca-usuario {
         position: relative;
-        width: 70%;
+        width: 60%;
+        max-width: 600px;
+    }
+
+    @media (max-width: 600px) {
+        header {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .busca-usuario {
+            width: 100%;
+        }
     }
 </style>

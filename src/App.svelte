@@ -1,12 +1,15 @@
 <script lang="ts">
 	import Cabecalho from "./components/Cabecalho.svelte";
+	import Formulario from "./components/Formulario.svelte";
 	import Usuario from "./components/Usuario.svelte";
 	import type IUsuario from "./interfaces/IUsuario";
 	let usuario: IUsuario | null = null;
 </script>
 
 <div class="app">
-	<Cabecalho bind:usuario /> <!--bind para atualizar o valor da variável usuario-->
+
+	<Cabecalho bind:usuario />
+	<!--bind para atualizar o valor da variável usuario-->
 	{#if usuario}
 		<Usuario {usuario} />
 		<!--passando a prop usuario para o componente Usuario-->
@@ -17,6 +20,6 @@
 
 <style>
 	.app {
-		max-height: 100vh;
+		min-height: 100vh;
 	}
 </style>

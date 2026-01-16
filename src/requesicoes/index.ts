@@ -4,8 +4,8 @@ function buscarUsuario(nomeUsuario: string) {
     return fetch(`https://api.github.com/users/${nomeUsuario}`);
 }
 
-function buscarRepositórios(nomeUsuario: string) {
+function buscarRepositorios(nomeUsuario: string) {
     return fetch(`https://api.github.com/users/${nomeUsuario}/repos?sort=created&per_page=5`);
 }
 
-export { buscarUsuario, buscarRepositórios };
+export { buscarUsuario, buscarRepositorios };

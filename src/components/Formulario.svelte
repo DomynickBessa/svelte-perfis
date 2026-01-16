@@ -1,6 +1,8 @@
 <script lang="ts">
     import type IUsuario from "../interfaces/IUsuario";
-    import { buscarRepositórios, buscarUsuario } from "../requesicoes";
+    import { buscarRepositorios, buscarUsuario } from "../requesicoes";
+    import montaUsuario from "../utils/montaUsuario";
+
     export let usuario: IUsuario | null = null;
 
     let value: string = "";
@@ -8,20 +10,13 @@
 
     async function aoSubmeter() {
         const respostaUsuario = await buscarUsuario(value); // Aqui pega o buscarUsuário do arquivo requisições.ts onde foi feito a requisição para a API do GitHub
-        const respostaRepositorios = await buscarRepositórios(value);
+        const respostaRepositorios = await buscarRepositorios(value);
 
         if (respostaUsuario.ok && respostaRepositorios.ok) {
             const dados = await respostaUsuario.json();
-            const dadosRepositorios = await respostaRepositorios.json(); 
-            // console.log(dadosRepositorios);
-            usuario = {
-                avatar_url: dados.avatar_url,
-                login: dados.login,
-                nome: dados.name,
-                perfil_url: dados.html_url,
-                repositorios_publicos: dados.public_repos,
-                seguidores: dados.followers,
-            };
+            const dadosRepositorios = await respostaRepositorios.json();
+
+            usuario = montaUsuario(dados, dadosRepositorios);
             statusErro = null;
         } else {
             statusErro = respostaUsuario.status;
@@ -40,9 +35,11 @@
         placeholder="Pesquise um usuário."
     />
     {#if statusErro === 404}
-    <span class="erro">Usuário não encontrado! Verifique o nome.</span>
+        <span class="erro">Usuário não encontrado! Verifique o nome.</span>
     {:else if statusErro === 403}
-    <span class="erro">Limite de requisições atingido. Tente novamente mais tarde.</span>
+        <span class="erro"
+            >Limite de requisições atingido. Tente novamente mais tarde.</span
+        >
     {/if}
     <div class="botao-container">
         <button type="submit" class="botao">Buscar</button>
@@ -52,9 +49,17 @@
 <!--fechando a tag form-->
 
 <style>
+    form {
+        display: flex; /* Garante que fica um do lado do outro */
+        align-items: center; /* Centraliza verticalmente */
+        width: 100%;
+        position: relative; /* Mantém o contexto para a mensagem de erro (absolute) */
+    }
+
     .input {
+        flex: 1;
         padding: 15px 25px;
-        width: calc(100% - 8.75rem);
+        min-width: 0;
         font-size: 1rem;
         border-radius: 8px;
         border: 1px solid #2e80fa;
@@ -62,6 +67,48 @@
         outline: 0;
     }
 
+    .botao-container {
+        margin-left: 10px; /* Espaço lateral no desktop */
+        flex-shrink: 0; /* Impede que o botão encolha */
+    }
+
+    .botao {
+        padding: 15px 25px;
+        border-radius: 8px;
+        border: none;
+        background: #2e80fa;
+        line-height: 22px;
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+        width: 100%;
+        justify-content: center;
+
+        transition: background-color 0.2s;
+
+        display: flex;
+        align-items: center;
+        gap: 13px; /* Espaçamento entre o texto e o ícone */
+    }
+
+    @media (max-width: 600px) {
+        form {
+            flex-direction: column; /* No celular, vira uma coluna */
+            align-items: stretch;
+        }
+
+        .botao-container {
+            margin-top: 15px;
+            margin-left: 0px;
+            width: 100%;
+            flex-shrink: 0; /* Impede que o botão encolha */
+        }
+
+        .botao {
+            width: 100%;
+            justify-content: center;
+        }
+    }
     .input::placeholder {
         font-family: "Roboto";
         font-style: italic;
@@ -70,39 +117,10 @@
         line-height: 26px;
         color: #6e8cba;
     }
-
-    .botao-container {
-        position: absolute;
-        width: 9.625rem;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        display: flex;
-    }
-
-    .botao {
-        padding: 15px 24px;
-        border-radius: 8px;
-        border: none;
-        background: #2e80fa;
-        line-height: 26px;
-        color: #fff;
-        font-size: 22px;
-        cursor: pointer;
-
-        transition: background-color 0.2s;
-
-        display: flex;
-        align-items: center;
-        gap: 13px;
-    }
-
     .botao:hover {
         background: #4590ff;
     }
-
     .erro {
-        position: absolute;
         bottom: -25px;
         left: 0;
         font-style: italic;
