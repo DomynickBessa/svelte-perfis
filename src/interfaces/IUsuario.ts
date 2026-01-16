@@ -7,5 +7,5 @@ export default interface IUsuario {
     perfil_url: string;
     repositorios_publicos: number;
     seguidores: number;
-    repositorios_recentes?: IRepositorios[];
+    repositorios_recentes: IRepositorios[];
 }
