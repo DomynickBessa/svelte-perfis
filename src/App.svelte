@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Cabecalho from "./components/Cabecalho.svelte";
-	import Formulario from "./components/Formulario.svelte";
 	import Usuario from "./components/Usuario.svelte";
 	import type IUsuario from "./interfaces/IUsuario";
 	let usuario: IUsuario | null = null;

@@ -2,6 +2,7 @@
     import type IUsuario from "../interfaces/IUsuario";
     import { buscarRepositorios, buscarUsuario } from "../requesicoes";
     import montaUsuario from "../utils/montaUsuario";
+    import Botao from "./Botao.svelte";
 
     export let usuario: IUsuario | null = null;
 
@@ -42,7 +43,7 @@
         >
     {/if}
     <div class="botao-container">
-        <button type="submit" class="botao">Buscar</button>
+        <Botao><img src="/assets/lupa.svg" alt="icone de lupa" /></Botao>
     </div>
 </form>
 
@@ -72,25 +73,6 @@
         flex-shrink: 0; /* Impede que o botão encolha */
     }
 
-    .botao {
-        padding: 15px 25px;
-        border-radius: 8px;
-        border: none;
-        background: #2e80fa;
-        line-height: 22px;
-        color: #fff;
-        font-size: 18px;
-        cursor: pointer;
-        width: 100%;
-        justify-content: center;
-
-        transition: background-color 0.2s;
-
-        display: flex;
-        align-items: center;
-        gap: 13px; /* Espaçamento entre o texto e o ícone */
-    }
-
     @media (max-width: 600px) {
         form {
             flex-direction: column; /* No celular, vira uma coluna */
@@ -103,11 +85,6 @@
             width: 100%;
             flex-shrink: 0; /* Impede que o botão encolha */
         }
-
-        .botao {
-            width: 100%;
-            justify-content: center;
-        }
     }
     .input::placeholder {
         font-family: "Roboto";
@@ -117,9 +94,7 @@
         line-height: 26px;
         color: #6e8cba;
     }
-    .botao:hover {
-        background: #4590ff;
-    }
+
     .erro {
         bottom: -25px;
         left: 0;

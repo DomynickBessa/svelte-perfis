@@ -1,8 +1,10 @@
 <script lang="ts">
     import BarraSuperior from "./BarraSuperior.svelte";
     import type IUsuario from "../interfaces/IUsuario";
-    import { buscarUsuario } from "../requesicoes";
+
     export let usuario: IUsuario;
+
+    $: tempRepositorios = Boolean(usuario.repositorios_recentes.length);
 </script>
 
 <div class="card-usuario">
@@ -35,33 +37,25 @@
                 Repositórios: <span>{usuario.repositorios_publicos}</span>
             </div>
         </div>
-        <div class="repositorios">
-            <h2 class="titulo">Repositórios Recentes:</h2>
-            <ul>
-                {#each usuario.repositorios_recentes as repo}
-                    <li>
-                        <a
-                            href={repo.url_repositorios}
-                            target="_blank"
-                            rel="noopener"
-                            class="repositorio"
-                        >
-                            {repo.nome}
-                        </a>
-                    </li>
-                {/each}
-                <li>
-                    <a
-                        href="https://github.com/{usuario.login}"
-                        target="_blank"
-                        rel="noopener"
-                        class="repositorio"
-                    >
-                        Perfil no GitHub
-                    </a>
-                </li>
-            </ul>
-        </div>
+        {#if tempRepositorios === true}
+            <div class="repositorios">
+                <h2 class="titulo">Repositórios Recentes:</h2>
+                <ul>
+                    {#each usuario.repositorios_recentes as repo}
+                        <li>
+                            <a
+                                href={repo.url_repositorios}
+                                target="_blank"
+                                rel="noopener"
+                                class="repositorio"
+                            >
+                                {repo.nome}
+                            </a>
+                        </li>
+                    {/each}
+                </ul>
+            </div>
+        {/if}
     </div>
     <!-- fechando a div usuario -->
 </div>
